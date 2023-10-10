@@ -1,51 +1,30 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import streamlit as st
-from streamlit.logger import get_logger
-
-LOGGER = get_logger(__name__)
-
-
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 def run():
     st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
+        page_title="MOT Tracking (AD)"
     )
+    st.sidebar.header("MOT Tracking For Division")
+    st.markdown("# COT2 MOT Tracking")
+    st.write("Data obtained from TI Dashboard")
+    st.write("Only available when MOT is submitted using this link: https://docs.google.com/forms/d/19n9MhbIZ0kmD-9sI1XBAnSlXKF1tox6LozP6akpLRG0/edit")
+    conn = st.experimental_connection("gsheets", type=GSheetsConnection)
 
-    st.write("# Welcome to Streamlit! 👋")
+    df = conn.read()
 
-    st.sidebar.success("Select a demo above.")
+    # #add area details, if area is available in gform this is not needed.
+    df_dashboard = pd.read_csv('https://dashboards.toastmasters.org/export.aspx?type=CSV&report=districtperformance~51~9/30/2023~~2023-2024')
+    # merged_df = df.merge(df_dashboard[['Club Name', 'Area']], left_on='Your Club Name:', right_on='Club Name', how='left')
 
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+    # # Drop the duplicate "Club Name" column
+    # merged_df.drop('Club Name', axis=1, inplace=True)
 
+    # Print results.
+    all_divW = df_dashboard[df_dashboard['Division']=='W'][['Area','Club Name','Oct. Ren.']]
+    all_divW['MOT submitted'] = all_divW['Club Name'].apply(lambda x: df['Your Club Name:'].eq(x).sum() if x != 'Club Name' else 0)
+    all_divW = all_divW.rename(columns={'Oct. Ren.': 'Total Member'})
+    st.write(all_divW)
 
 if __name__ == "__main__":
     run()
