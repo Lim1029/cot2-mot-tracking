@@ -13,7 +13,10 @@ conn = st.experimental_connection("gsheets2", type=GSheetsConnection)
 df = conn.read()
 DivW = df[df[df.columns[10]].str.startswith('Div W')]
 DivW.reset_index(inplace=True)
-# st.write(DivW)
+
+Non_DivW = df[~df[df.columns[10]].str.startswith('Div W')]
+Non_DivW.reset_index(inplace=True)
+# st.write(Non_DivW)
 # st.write(DivW.columns)
 
 #remove non club officer
@@ -24,6 +27,11 @@ DivW['Total Counts'] = DivW[columns_to_combine].apply(lambda row: ''.join(row.as
 DivW['Total Counts'] = DivW['Total Counts'].str.replace('nan', '')
 # Drop the original columns if needed
 DivW = DivW.drop(columns=columns_to_combine)
+
+Non_DivW['Total Counts'] = Non_DivW[columns_to_combine].apply(lambda row: ''.join(row.astype(str)), axis=1)
+Non_DivW['Total Counts'] = Non_DivW['Total Counts'].str.replace('nan', '')
+# Drop the original columns if needed
+Non_DivW = Non_DivW.drop(columns=columns_to_combine)
 
 st.write("DivW COT2 Registration for Club Officers")
 DivW_CO = DivW[DivW[DivW.columns[6]]=='Club Officer 分会执委']
@@ -38,12 +46,17 @@ st.write("Attendees meal option")
 
 meal_counts = DivW[DivW.columns[5]].value_counts()
 origin_counts = DivW['Total Counts'].value_counts()
+origin_non_divW_counts = Non_DivW['Total Counts'].value_counts()
 st.write(meal_counts)
-
+origin_counts = origin_counts.to_frame()
+origin_non_divW_counts = origin_non_divW_counts.to_frame()
 st.write("Participants by Club")
+club_count = origin_counts.merge(origin_non_divW_counts, how='outer', left_index=True, right_index=True)
+club_count = club_count.rename(columns={'Total Counts_x': 'Div W'})
+club_count = club_count.rename(columns={'Total Counts_y': 'Other Div'})
 
-st.write(origin_counts)
-
+st.write(club_count)
+# st.write(type(origin_counts))
 # name_list = df[df['Your Club Name:']==option]
 # st.write(name_list['Name'])
 # st.write("Obtain your club's survey result here: *Coming Soon*")
