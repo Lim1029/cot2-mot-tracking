@@ -19,4 +19,13 @@ option = st.selectbox(
 
 name_list = df[df['Your Club Name:']==option]
 st.write(name_list['Name'])
-st.write("Obtain your club's survey result here: *Coming Soon*")
+filename = f'{option}_MOT_results.csv'
+name_list.to_csv(filename)
+# st.button("Obtain your club's survey result here", type="primary" on_click=)
+with open(filename, "rb") as fp:
+    btn = st.download_button(
+        label="Obtain your club's survey result here",
+        data=fp,
+        file_name=filename
+    )
+# st.write("Obtain your club's survey result here: *Coming Soon*")
