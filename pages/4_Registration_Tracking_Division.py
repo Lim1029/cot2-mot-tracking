@@ -48,6 +48,12 @@ meal_counts = DivW[DivW.columns[5]].value_counts()
 origin_counts = DivW['Total Counts'].value_counts()
 origin_non_divW_counts = Non_DivW['Total Counts'].value_counts()
 st.write(meal_counts)
+
+st.write("Participants by Division")
+# st.dataframe(DivW)
+st.dataframe(DivW[DivW.columns[15]].value_counts())
+DivW['Area'] = DivW[DivW.columns[18]].str[:2]
+st.dataframe(DivW['Area'].value_counts())
 origin_counts = origin_counts.to_frame()
 origin_non_divW_counts = origin_non_divW_counts.to_frame()
 st.write("Participants by Club")
