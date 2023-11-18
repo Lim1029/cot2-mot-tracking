@@ -53,10 +53,20 @@ st.write("Participants by Division")
 # st.dataframe(DivW)
 st.dataframe(DivW[DivW.columns[15]].value_counts())
 DivW['Area'] = DivW[DivW.columns[18]].str[:2]
+st.write("Participants by Area")
 st.dataframe(DivW['Area'].value_counts())
+
+st.write("Participants by Role")
+st.dataframe(DivW[DivW.columns[6]].value_counts())
+
+st.write("Participants by Officer Role")
+st.dataframe(DivW[DivW.columns[7]].value_counts())
+
 origin_counts = origin_counts.to_frame()
 origin_non_divW_counts = origin_non_divW_counts.to_frame()
 st.write("Participants by Club")
+
+
 club_count = origin_counts.merge(origin_non_divW_counts, how='outer', left_index=True, right_index=True)
 club_count = club_count.rename(columns={'Total Counts_x': 'Div W'})
 club_count = club_count.rename(columns={'Total Counts_y': 'Other Div'})
