@@ -49,12 +49,17 @@ origin_counts = DivW['Total Counts'].value_counts()
 origin_non_divW_counts = Non_DivW['Total Counts'].value_counts()
 st.write(meal_counts)
 
-st.write("Participants by Division")
+st.write("Participants by Division (Club Officer only, excluding role players)")
+DivWCO = DivW[DivW[DivW.columns[6]]=='Club Officer 分会执委']
 # st.dataframe(DivW)
-st.dataframe(DivW[DivW.columns[15]].value_counts())
+st.dataframe(DivWCO[DivWCO.columns[15]].value_counts())
 DivW['Area'] = DivW[DivW.columns[18]].str[:2]
-st.write("Participants by Area")
-st.dataframe(DivW['Area'].value_counts())
+st.write("Participants by Area (Club Officer only, excluding role players)")
+DivWCO = DivW[DivW[DivW.columns[6]]=='Club Officer 分会执委']
+st.dataframe(DivWCO['Area'].value_counts())
+# sum the column area
+area_sum = DivWCO['Area'].value_counts().sum()
+st.write(area_sum)
 
 st.write("Participants by Role")
 st.dataframe(DivW[DivW.columns[6]].value_counts())
@@ -72,6 +77,9 @@ club_count = club_count.rename(columns={'Total Counts_x': 'Div W'})
 club_count = club_count.rename(columns={'Total Counts_y': 'Other Div'})
 
 st.write(club_count)
+
+st.write("Registered and not coming")
+st.write("Am Sandra from Speak to Lead Toastmasters")
 # st.write(type(origin_counts))
 # name_list = df[df['Your Club Name:']==option]
 # st.write(name_list['Name'])
