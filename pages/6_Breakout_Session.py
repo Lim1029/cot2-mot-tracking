@@ -68,10 +68,17 @@ def get_area(club_name):
     else:
         return 'Non-DivW'
 
+def get_area(club_name):
+    area = club_name[:2]
+    if area in ['W1', 'W2', 'W3', 'W4', 'W5']:
+        return area
+    else:
+        return 'Non-DivW'
+
 DivWCO['Area'] = DivWCO['Club Name'].apply(get_area)
 groups = DivWCO.groupby('Area')
 counts = DivWCO['Area'].value_counts().rename_axis('Area').reset_index(name='Counts')
-st.markdown("## Participant Counts by Room")
+st.markdown("## Participant Counts by Room (Only CO)")
 st.dataframe(counts)
 # st.dataframe(DivWCO['Area'].value_counts())
 columns = DivWCO.columns
