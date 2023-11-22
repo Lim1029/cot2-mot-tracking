@@ -8,7 +8,7 @@ import streamlit as st
 from streamlit.hello.utils import show_code
 
 st.set_page_config(page_title="Registration_Tracking", page_icon="📊")
-st.markdown("# Registration Tracking for OC")
+st.markdown("# Div W COT2 Breakout Room Assignment")
 
 # pwd = st.text_input("Enter password to access the data", type="password")
 
