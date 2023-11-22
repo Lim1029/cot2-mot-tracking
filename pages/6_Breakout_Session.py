@@ -70,7 +70,10 @@ def get_area(club_name):
 
 DivWCO['Area'] = DivWCO['Club Name'].apply(get_area)
 groups = DivWCO.groupby('Area')
-st.dataframe(DivWCO['Area'].value_counts())
+counts = DivWCO['Area'].value_counts().rename_axis('Area').reset_index(name='Counts')
+st.markdown("## Participant Counts by Room")
+st.dataframe(counts)
+# st.dataframe(DivWCO['Area'].value_counts())
 columns = DivWCO.columns
 
 # Iterate over the groups
